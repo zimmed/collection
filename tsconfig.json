@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "./dist",
+    "target": "es5",
+    "downlevelIteration": true,
+    "module": "commonjs",
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "lib": ["esnext"],
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true
+  },
+  "include": ["src/**/*"],
+  "javascript.validate.enable": true
+}

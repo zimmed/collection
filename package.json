@@ -1,0 +1,68 @@
+{
+  "name": "@zimmed/collection",
+  "version": "0.1.0",
+  "description": "Performance-optimized collection of objects",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "author": "zimmed@zimmed.io",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "scripts": {
+    "compile": "npm run lint && npm run test:coverage && npm run badges && npm run build && npm run docs",
+    "lint": "npx eslint .",
+    "build": "mkdir -p dist && npx tsc --project tsconfig.build.json",
+    "docs": "npx typedoc",
+    "test": "npx jest",
+    "test:coverage": "npx jest --coverage",
+    "badges": "npx jest-coverage-badges input './test/coverage-summary.json' output './test'",
+    "git:add": "git add .",
+    "test:watch": "npx jest --watch",
+    "prepublish": "npm build",
+    "postinstall": "npm build",
+    "prepare": "npm build"
+  },
+  "pre-commit": [
+    "lint",
+    "test:coverage",
+    "badges",
+    "build",
+    "docs",
+    "git:add"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zimmed/collection.git"
+  },
+  "files": [
+    "/dist"
+  ],
+  "keywords": [
+    "collection",
+    "caching",
+    "join",
+    "object iteration"
+  ],
+  "bugs": {
+    "url": "https://github.com/zimmed/collection/issues"
+  },
+  "homepage": "https://github.com/zimmed/collection#readme",
+  "devDependencies": {
+    "@types/jest": "^26.0.15",
+    "@typescript-eslint/eslint-plugin": "^4.7.0",
+    "@typescript-eslint/parser": "^4.7.0",
+    "@zimmed/typedoc-plugin-respect-name-tag": "^1.2.2",
+    "eslint": "^7.13.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "jest-coverage-badges": "^1.1.2",
+    "pre-commit": "^1.2.2",
+    "prettier": "^2.1.2",
+    "ts-jest": "^26.4.4",
+    "typedoc": "^0.19.2",
+    "typedoc-plugin-markdown": "^3.0.11",
+    "typescript": "^4.0.5"
+  },
+  "dependencies": {}
+}
