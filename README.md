@@ -1,4 +1,4 @@
-**[collection - v0.1.0](README.md)**
+**[collection - v0.2.0](README.md)**
 
 > [Globals](globals.md)
 
@@ -202,11 +202,25 @@ const slice = Collection.slice(collection, 0, 5); // First 5 ordered records
 const splice = Collection.splice(collection, 0, 5); // Removes the first 5 records from the collection and returns them
 ```
 
-### Coming in next release
+### Join / Expand Collections by ID References
 
-Perform SQL-like joins between collections with `join` function:
+Perform SQL-like joins between collections with `join` function. Returns an array
+of expanded records from the provided collection. The second argument is a map of
+property names to their associated collection.
+
+#### Notes
+
+- Properties that hold arrays of record IDs need to be mapped in the second
+  argument as a tuple as shown in the example. This is a temporary fix to get
+  proper typescript inferrence, but an alternate solution is in the works.
+- The property name map can have duplicate collections mapped to different
+  property names, such as: `{ char: characters, character: characters, characters: [characters] }`
+  Which will dereference `char` and `character` prop names to their associated
+  `Character` record, and dereference an array of IDs to `Character`s for the
+  `characters` property name.
 
 ```typescript
+// Setup
 const chapters = Collection.create([
   { id: 'ch1', characters: [1, 2], scene: 's1' },
   { id: 'ch2', characters: [1, 3, 9], scene: 's3' },
@@ -227,14 +241,16 @@ const books = Collection.create([
   { id: 'book1', name: 'Extended Edition', chapters: ['ch1', 'ch2', 'ch3', 'ch10'] },
   { id: 'book2', name: 'Abridged Version', chapters: ['ch1', 'ch3'] },
 ]);
+```
 
+```typescript
 const expandedBooks = Collection.join(books, {
-  chapters,
-  characters,
+  chapters: [chapters],
+  characters: [characters],
   scene: scenes,
 });
 
-console.log(expandedBooks.book1);
+console.log(expandedBooks[0]);
 /**
  * {
  *  id: 'book1',
@@ -266,7 +282,7 @@ console.log(expandedBooks.book1);
  *        { id: 3, name: 'Kingmeister' },
  *      ],
  *    },
- *    null,
+ *    undefined,
  *  ]
  * }
  */
@@ -274,6 +290,32 @@ console.log(expandedBooks.book1);
 
 If you don't mind mutating your original collection and want to optimize memory-usage,
 the `expand` function will be available to use in place of `join`.
+
+```typescript
+// Given the same setup above
+Collection.expand(books, {
+  chapters: [chapters],
+  characters: [characters],
+  scene: scenes,
+});
+
+console.log(books.book1.scene); //-> { id: 's1', name: 'Hot Springs' }
+```
+
+Because `expand` mutates the original records, it can also be safely used to dereference
+circular dependencies (unlike `join`). However, if using typescript, you will need to
+do it two calls to avoid circular type dependency issues:
+
+```typescript
+Collection.expand(
+  Collection.expand(books, {
+    chapters: [chapters],
+    characters: [characters],
+    scene: scenes,
+  }),
+  { books: [books] }
+);
+```
 
 ## Docs
 

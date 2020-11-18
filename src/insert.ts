@@ -1,4 +1,4 @@
-import { Collection, IGenericRecord } from './types';
+import { Collection, IGenericRecord, IdOf } from './types';
 import cache from './cache';
 import { insertRecord } from './internals';
 
@@ -35,7 +35,7 @@ export default function insert<T extends IGenericRecord>(collection: Collection<
  */
 function insertOne<T extends IGenericRecord>(collection: Collection<T>, record: T): Collection<T> {
   if (!collection[record.id]) {
-    cache.get(collection).keys.unshift(record.id as keyof typeof collection);
+    (cache.get(collection).keys as Array<IdOf<T>>).unshift(record.id as IdOf<T>);
   }
   collection[record.id] = record;
   return collection;

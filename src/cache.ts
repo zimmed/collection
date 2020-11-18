@@ -1,11 +1,11 @@
-import { Collection, CollectionData, KeyOf } from './types';
+import { Collection, CollectionData, KeyOf, ID } from './types';
 
 /** @internal */
-let cache = new WeakMap<Collection, CollectionData>();
+let cache = new WeakMap<Collection, CollectionData<ID>>();
 
 /** @internal */
 export default {
-  getInstance(): WeakMap<Collection, CollectionData> {
+  getInstance(): WeakMap<Collection, CollectionData<ID>> {
     return cache;
   },
 
@@ -19,7 +19,7 @@ export default {
   },
 
   set<T extends Collection>(collection: T, data: CollectionData<keyof typeof collection>): void {
-    cache.set(collection, data as CollectionData);
+    cache.set(collection, data as CollectionData<KeyOf<T>>);
   },
 
   del<T extends Collection>(collection: T): void {
@@ -27,6 +27,6 @@ export default {
   },
 
   clear(): void {
-    cache = new WeakMap<Collection, CollectionData>();
+    cache = new WeakMap<Collection, CollectionData<ID>>();
   },
 };

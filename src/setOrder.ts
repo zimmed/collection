@@ -1,4 +1,4 @@
-import { Collection, IGenericRecord } from './types';
+import { Collection, IGenericRecord, IdOf } from './types';
 import cache from './cache';
 
 /**
@@ -16,19 +16,19 @@ export default function setOrder<T extends IGenericRecord>(
   keys: Array<keyof typeof collection>
 ): typeof collection {
   const data = cache.get(collection);
-  const last = data.keys.slice(0);
+  const last = data.keys.slice(0) as IdOf<T>[];
   let cur = 0;
   let index;
 
   for (let i = 0, l = keys.length; i < l; i++) {
-    index = last.indexOf(keys[i]);
+    index = last.indexOf(keys[i] as IdOf<T>);
     if (index !== -1) {
-      data.keys[cur] = last.splice(index, 1)[0];
+      (data.keys as IdOf<T>[])[cur] = last.splice(index, 1)[0];
       cur += 1;
     }
   }
   for (let i = 0, l = last.length; i < l; i++) {
-    data.keys[cur] = last[i];
+    (data.keys as IdOf<T>[])[cur] = last[i];
     cur += 1;
   }
 

@@ -1,4 +1,4 @@
-import { Collection, IGenericRecord, FindPredicate } from './types';
+import { Collection, IGenericRecord, FindPredicate, IdOf } from './types';
 import cache from './cache';
 
 /**
@@ -23,7 +23,7 @@ export default function remove<T extends IGenericRecord>(
   return recordIds.reduce((arr: T[], id: keyof typeof collection) => {
     r = collection[id];
     if (r) {
-      idx = data.keys.indexOf(id);
+      idx = (data.keys as IdOf<T>[]).indexOf(id as IdOf<T>);
       data.keys.splice(idx, 1);
       delete collection[id];
       return arr.concat(r);
@@ -45,7 +45,7 @@ function removeOne<T extends IGenericRecord>(
 
   if (r) {
     const data = cache.get(collection);
-    const idx = data.keys.indexOf(recordId);
+    const idx = (data.keys as IdOf<T>[]).indexOf(recordId as IdOf<T>);
 
     data.keys.splice(idx, 1);
     delete collection[recordId];

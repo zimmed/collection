@@ -1,4 +1,13 @@
-import { Collection, IGenericRecord, SortCompare, SearchCompare } from './types';
+import {
+  Collection,
+  IGenericRecord,
+  SortCompare,
+  IdOf,
+  SearchCompare,
+  GetTypeMap,
+  CollectionEntryMap,
+  TransformTypes,
+} from './types';
 import cache from './cache';
 
 /** @internal */
@@ -83,7 +92,7 @@ export function insertRecord<T extends IGenericRecord>(
   let start;
 
   if (collection[record.id]) {
-    start = data.keys.indexOf(record.id as keyof typeof collection);
+    start = (data.keys as IdOf<T>[]).indexOf(record.id as IdOf<T>);
   } else {
     start = data.keys.length;
     data.keys.length += 1;
@@ -100,7 +109,7 @@ export function insertRecord<T extends IGenericRecord>(
   }
 
   collection[record.id] = record;
-  data.keys[index] = record.id as keyof typeof collection;
+  (data.keys as IdOf<T>[])[index] = record.id as IdOf<T>;
   return collection;
 }
 
@@ -116,4 +125,88 @@ export function cloneValue<T>(v: T): T {
     }, {}) as unknown) as T;
   }
   return v;
+}
+
+/** @internal */
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function expandObject<T extends object, M extends CollectionEntryMap>(
+  obj: T,
+  collections: M,
+  mutate: boolean,
+  expanded: WeakMap<any, boolean>
+): TransformTypes<T, GetTypeMap<typeof collections>> {
+  const out = (Object.keys(obj) as Array<keyof T>).reduce((next, key) => {
+    const c = collections[key as string];
+    const v = obj[key];
+
+    if (Array.isArray(c) && Array.isArray(v)) {
+      if (mutate) {
+        for (let i = 0, l = v.length; i < l; i++) {
+          v[i] = expandValues(typeof v[i] !== 'object' ? c[0][v[i]] : v[i], collections, mutate, expanded);
+        }
+      } else {
+        next[key as keyof typeof next] = v.map((id) => expandValues(c[0][id], collections, mutate, expanded)) as any;
+      }
+    } else if (c && v) {
+      next[key as keyof typeof next] = expandValues(
+        ((!mutate || typeof v !== 'object'
+          ? c[(v as unknown) as keyof typeof c]
+          : // eslint-disable-next-line @typescript-eslint/ban-types
+            v) as unknown) as object,
+        collections,
+        mutate,
+        expanded
+      ) as any;
+    } else if (v && typeof v === 'object') {
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      next[key as keyof typeof next] = expandValues((v as unknown) as object, collections, mutate, expanded) as any;
+    } else if (!mutate) {
+      next[key as keyof typeof next] = v as any;
+    }
+
+    return next;
+  }, (mutate ? obj : {}) as Partial<TransformTypes<T, GetTypeMap<typeof collections>>>) as TransformTypes<
+    T,
+    GetTypeMap<typeof collections>
+  >;
+
+  expanded.set(out, true);
+  return out;
+}
+
+/** @internal */
+export function expandArray<T extends any[], M extends CollectionEntryMap>(
+  arr: T,
+  collections: M,
+  mutate: boolean,
+  expanded: WeakMap<any, boolean>
+): TransformTypes<T, GetTypeMap<typeof collections>> {
+  if (mutate) {
+    for (let i = 0, l = arr.length; i < l; i++) {
+      if (arr[i] && typeof arr[i] === 'object') arr[i] = expandValues(arr[i], collections, true, expanded);
+    }
+    return arr as TransformTypes<T, GetTypeMap<typeof collections>>;
+  }
+  return arr.map((e) =>
+    e && typeof e === 'object' ? expandValues(e, collections, mutate, expanded) : e
+  ) as TransformTypes<T, GetTypeMap<typeof collections>>;
+}
+
+/** @internal */
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function expandValues<T extends object, M extends CollectionEntryMap>(
+  mixed: T,
+  collections: M,
+  mutate = false,
+  expanded = new WeakMap()
+): TransformTypes<T, GetTypeMap<typeof collections>> {
+  if (mixed) {
+    if (expanded.get(mixed)) return mixed as TransformTypes<T, GetTypeMap<typeof collections>>;
+    expanded.set(mixed, true);
+    if (Array.isArray(mixed)) {
+      return expandArray(mixed, collections, mutate, expanded) as TransformTypes<T, GetTypeMap<typeof collections>>;
+    }
+    return expandObject(mixed, collections, mutate, expanded);
+  }
+  return mixed;
 }

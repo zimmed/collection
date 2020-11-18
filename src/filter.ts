@@ -18,7 +18,7 @@ export default function filter<T extends IGenericRecord>(
   collection: Collection<T>,
   callback: IterateCallback<T, boolean>
 ): T[] {
-  const keys = cache.get(collection).keys as Array<keyof typeof collection>;
+  const keys = cache.get(collection).keys;
   const l = keys.length;
   const out = [];
   let r;

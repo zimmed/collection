@@ -1,4 +1,4 @@
-**[collection - v0.1.0](../README.md)**
+**[collection - v0.2.0](../README.md)**
 
 > [Globals](../globals.md) / IIterator
 
@@ -26,4 +26,4 @@ Name |
 
 •  **next**: () => { value: T  } \| { done: true  }
 
-*Defined in [iterate.ts:5](https://github.com/zimmed/collection/blob/master/src/iterate.ts#L5)*
+*Defined in [iterate.ts:5](https://github.com/zimmed/collection/blob/ac50137/src/iterate.ts#L5)*
