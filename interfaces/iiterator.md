@@ -26,4 +26,4 @@ Name |
 
 •  **next**: () => { value: T  } \| { done: true  }
 
-*Defined in [iterate.ts:5](https://github.com/zimmed/collection/blob/2d256cd/src/iterate.ts#L5)*
+*Defined in [iterate.ts:5](https://github.com/zimmed/collection/blob/11f0d13/src/iterate.ts#L5)*
