@@ -14,16 +14,16 @@ import { insertRecord } from './internals';
  * ```
  */
 export default function insert<T extends IGenericRecord>(collection: Collection<T>, ...records: T[]): Collection<T> {
-  Array.prototype.unshift.apply(
-    cache.get(collection).keys,
-    records.reduce((next, record) => {
-      if (!collection[record.id]) {
-        next.push(record.id as keyof typeof collection);
-      }
-      collection[record.id] = record;
-      return next;
-    }, [] as Array<keyof typeof collection>)
-  );
+  const { keys } = cache.get(collection);
+  const add: IdOf<T>[] = [];
+
+  for (let i = 0, l = records.length; i < l; i++) {
+    const { id } = records[i];
+
+    if (!collection[id]) add.push(id as IdOf<T>);
+    collection[id] = records[i];
+  }
+  Array.prototype.unshift.apply(keys, add);
 
   return collection;
 }
@@ -34,11 +34,7 @@ export default function insert<T extends IGenericRecord>(collection: Collection<
  * @name insert.one
  */
 function insertOne<T extends IGenericRecord>(collection: Collection<T>, record: T): Collection<T> {
-  if (!collection[record.id]) {
-    (cache.get(collection).keys as Array<IdOf<T>>).unshift(record.id as IdOf<T>);
-  }
-  collection[record.id] = record;
-  return collection;
+  return insertRecord(collection, record);
 }
 
 /**
@@ -55,11 +51,27 @@ function insertOne<T extends IGenericRecord>(collection: Collection<T>, record: 
  * @name insert.at
  */
 function insertAt<T extends IGenericRecord>(collection: Collection<T>, index: number, ...records: T[]): Collection<T> {
-  const data = cache.get(collection);
+  const { keys } = cache.get(collection);
+  const add: IdOf<T>[] = [];
 
-  records.reverse().forEach((record) => {
-    insertRecord(collection, record, index, data);
-  });
+  for (let i = 0, l = records.length; i < l; i++) {
+    const { id } = records[i];
+
+    if (!collection[id]) add.push(id as IdOf<T>);
+    collection[id] = records[i];
+  }
+
+  const count = add.length;
+
+  if (count) {
+    keys.length += count;
+    for (let i = keys.length - 1, l = index + count; i >= l; i--) {
+      keys[i] = keys[i - count];
+    }
+    for (let i = 0; i < count; i++) {
+      keys[index + i] = add[i];
+    }
+  }
 
   return collection;
 }

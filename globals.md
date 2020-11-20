@@ -1,8 +1,8 @@
-**[collection - v0.2.0](README.md)**
+**[collection - v0.3.1](README.md)**
 
 > Globals
 
-# collection - v0.2.0
+# collection - v0.3.1
 
 ## Index
 
@@ -14,9 +14,9 @@
 ### Type aliases
 
 * [Collection](globals.md#collection)
-* [CollectionArray](globals.md#collectionarray)
 * [CollectionData](globals.md#collectiondata)
-* [CollectionMap](globals.md#collectionmap)
+* [CollectionEntry](globals.md#collectionentry)
+* [CollectionEntryMap](globals.md#collectionentrymap)
 * [FindPredicate](globals.md#findpredicate)
 * [ID](globals.md#id)
 * [IdOf](globals.md#idof)
@@ -29,7 +29,6 @@
 * [SearchCompare](globals.md#searchcompare)
 * [SortCompare](globals.md#sortcompare)
 * [UnionToIntersection](globals.md#uniontointersection)
-* [UpdateCallback](globals.md#updatecallback)
 
 ### Functions
 
@@ -45,6 +44,8 @@
 * [find](globals.md#find)
 * [find.index](globals.md#find.index)
 * [forEach](globals.md#foreach)
+* [getList](globals.md#getlist)
+* [getOrder](globals.md#getorder)
 * [insert](globals.md#insert)
 * [insert.at](globals.md#insert.at)
 * [insert.one](globals.md#insert.one)
@@ -53,6 +54,8 @@
 * [join](globals.md#join)
 * [length](globals.md#length)
 * [map](globals.md#map)
+* [move](globals.md#move)
+* [move.at](globals.md#move.at)
 * [pop](globals.md#pop)
 * [reduce](globals.md#reduce)
 * [remove](globals.md#remove)
@@ -69,29 +72,19 @@
 * [sortedInsert](globals.md#sortedinsert)
 * [sortedInsert.one](globals.md#sortedinsert.one)
 * [splice](globals.md#splice)
+* [swap.at.with](globals.md#swap.at.with)
+* [swap.at.with.index](globals.md#swap.at.with.index)
+* [swap.with](globals.md#swap.with)
+* [swap.with.index](globals.md#swap.with.index)
 * [update](globals.md#update)
 
 ## Type aliases
 
 ### Collection
 
-Ƭ  **Collection**\<T>: [CollectionMap](globals.md#collectionmap)\<T>
+Ƭ  **Collection**\<T>: Record\<IGenericRecord[\"id\"], T>
 
-*Defined in [types.ts:14](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L14)*
-
-#### Type parameters:
-
-Name | Type | Default |
------- | ------ | ------ |
-`T` | [IGenericRecord](interfaces/igenericrecord.md) | IGenericRecord |
-
-___
-
-### CollectionArray
-
-Ƭ  **CollectionArray**\<T>: Array\<T>
-
-*Defined in [types.ts:12](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L12)*
+*Defined in [types.ts:10](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L10)*
 
 #### Type parameters:
 
@@ -105,7 +98,7 @@ ___
 
 Ƭ  **CollectionData**\<T>: { keys: T[]  }
 
-*Defined in [types.ts:8](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L8)*
+*Defined in [types.ts:8](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L8)*
 
 #### Type parameters:
 
@@ -121,17 +114,31 @@ Name | Type |
 
 ___
 
-### CollectionMap
+### CollectionEntry
 
-Ƭ  **CollectionMap**\<T>: Record\<IGenericRecord[\"id\"], T>
+Ƭ  **CollectionEntry**\<C>: C \| C[]
 
-*Defined in [types.ts:10](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L10)*
+*Defined in [types.ts:75](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L75)*
 
 #### Type parameters:
 
 Name | Type | Default |
 ------ | ------ | ------ |
-`T` | [IGenericRecord](interfaces/igenericrecord.md) | IGenericRecord |
+`C` | [Collection](globals.md#collection) | Collection |
+
+___
+
+### CollectionEntryMap
+
+Ƭ  **CollectionEntryMap**\<C>: Record\<string, [CollectionEntry](globals.md#collectionentry)\<C>>
+
+*Defined in [types.ts:77](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L77)*
+
+#### Type parameters:
+
+Name | Type | Default |
+------ | ------ | ------ |
+`C` | [Collection](globals.md#collection) | Collection |
 
 ___
 
@@ -139,7 +146,7 @@ ___
 
 Ƭ  **FindPredicate**\<T>: (record: T) => boolean
 
-*Defined in [types.ts:27](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L27)*
+*Defined in [types.ts:25](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L25)*
 
 #### Type parameters:
 
@@ -153,7 +160,7 @@ ___
 
 Ƭ  **ID**: string \| number
 
-*Defined in [types.ts:2](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L2)*
+*Defined in [types.ts:2](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L2)*
 
 ___
 
@@ -161,7 +168,7 @@ ___
 
 Ƭ  **IdOf**\<T>: T *extends* { id: *infer* I  } ? I : never
 
-*Defined in [types.ts:35](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L35)*
+*Defined in [types.ts:27](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L27)*
 
 #### Type parameters:
 
@@ -175,7 +182,7 @@ ___
 
 Ƭ  **Iterable**\<T>: { [Symbol.iterator]: () => [IIterator](interfaces/iiterator.md)\<T> ; length: number  }
 
-*Defined in [iterate.ts:8](https://github.com/zimmed/collection/blob/ac50137/src/iterate.ts#L8)*
+*Defined in [iterate.ts:8](https://github.com/zimmed/collection/blob/2d256cd/src/iterate.ts#L8)*
 
 #### Type parameters:
 
@@ -194,9 +201,9 @@ ___
 
 ### IterateCallback
 
-Ƭ  **IterateCallback**\<T, A>: (record: T, i: number, ids: Array\<[KeyOf](globals.md#keyof)\<[Collection](globals.md#collection)\<T>>>) => A
+Ƭ  **IterateCallback**\<T, A>: (record: T, i: number, ids: Array\<[IdOf](globals.md#idof)\<T>>) => A
 
-*Defined in [types.ts:29](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L29)*
+*Defined in [types.ts:19](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L19)*
 
 #### Type parameters:
 
@@ -211,7 +218,7 @@ ___
 
 Ƭ  **KeyOf**\<C>: C *extends* { [key:string]: any;  } ? string : C *extends* { [key:number]: { id: number  };  } ? number : never
 
-*Defined in [types.ts:37](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L37)*
+*Defined in [types.ts:29](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L29)*
 
 #### Type parameters:
 
@@ -223,9 +230,9 @@ ___
 
 ### ReduceCallback
 
-Ƭ  **ReduceCallback**\<T, A>: (accum: A, record: T, i: number, ids: Array\<[KeyOf](globals.md#keyof)\<[Collection](globals.md#collection)\<T>>>) => A
+Ƭ  **ReduceCallback**\<T, A>: (accum: A, record: T, i: number, ids: Array\<[IdOf](globals.md#idof)\<T>>) => A
 
-*Defined in [types.ts:20](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L20)*
+*Defined in [types.ts:12](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L12)*
 
 #### Type parameters:
 
@@ -240,7 +247,7 @@ ___
 
 Ƭ  **Ref**\<N, T>: T *extends* { id: *infer* I  } ? { id: I ; name: N  } : never
 
-*Defined in [types.ts:43](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L43)*
+*Defined in [types.ts:35](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L35)*
 
 #### Type parameters:
 
@@ -253,9 +260,9 @@ ___
 
 ### RefForCollection
 
-Ƭ  **RefForCollection**\<N, C>: C *extends* CollectionMap\<*infer* T> ? Ref\<N, T> : C *extends* CollectionArray\<*infer* T> ? Ref\<N, T> : never
+Ƭ  **RefForCollection**\<N, C>: C *extends* Collection\<*infer* T> ? Ref\<N, T> : never
 
-*Defined in [types.ts:45](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L45)*
+*Defined in [types.ts:37](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L37)*
 
 #### Type parameters:
 
@@ -270,7 +277,7 @@ ___
 
 Ƭ  **SearchCompare**\<T>: (record: T) => 0 \| 1 \| -1
 
-*Defined in [types.ts:18](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L18)*
+*Defined in [types.ts:23](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L23)*
 
 #### Type parameters:
 
@@ -284,7 +291,7 @@ ___
 
 Ƭ  **SortCompare**\<T>: (a: T, b: T) => 0 \| 1 \| -1
 
-*Defined in [types.ts:16](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L16)*
+*Defined in [types.ts:21](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L21)*
 
 #### Type parameters:
 
@@ -298,7 +305,7 @@ ___
 
 Ƭ  **UnionToIntersection**\<U>: U *extends* any ? (k: U) => void : never *extends* (k: *infer* I) => void ? I : never
 
-*Defined in [types.ts:51](https://github.com/zimmed/collection/blob/ac50137/src/types.ts#L51)*
+*Defined in [types.ts:39](https://github.com/zimmed/collection/blob/2d256cd/src/types.ts#L39)*
 
 #### Type parameters:
 
@@ -306,27 +313,13 @@ Name |
 ------ |
 `U` |
 
-___
-
-### UpdateCallback
-
-Ƭ  **UpdateCallback**\<T>: (record: T, i: number, ids: string[]) => Partial\<T> \| undefined
-
-*Defined in [update.ts:4](https://github.com/zimmed/collection/blob/ac50137/src/update.ts#L4)*
-
-#### Type parameters:
-
-Name |
------- |
-`T` |
-
 ## Functions
 
 ### append
 
 ▸ **append**\<T>(`collection`: [Collection](globals.md#collection)\<T>, ...`records`: T[]): [Collection](globals.md#collection)\<T>
 
-*Defined in [append.ts:17](https://github.com/zimmed/collection/blob/ac50137/src/append.ts#L17)*
+*Defined in [append.ts:17](https://github.com/zimmed/collection/blob/2d256cd/src/append.ts#L17)*
 
 Push records to the end of the collection.
 
@@ -361,7 +354,7 @@ ___
 
 ▸ **appendOne**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `record`: T): [Collection](globals.md#collection)\<T>
 
-*Defined in [append.ts:37](https://github.com/zimmed/collection/blob/ac50137/src/append.ts#L37)*
+*Defined in [append.ts:37](https://github.com/zimmed/collection/blob/2d256cd/src/append.ts#L37)*
 
 Same as `append` but performance-optimized for single record pushing.
 
@@ -388,7 +381,7 @@ ___
 
 ▸ **at**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `index`: number): T \| undefined
 
-*Defined in [at.ts:13](https://github.com/zimmed/collection/blob/ac50137/src/at.ts#L13)*
+*Defined in [at.ts:13](https://github.com/zimmed/collection/blob/2d256cd/src/at.ts#L13)*
 
 Get the record at the specified ordered index.
 
@@ -420,7 +413,7 @@ ___
 
 ▸ **clone**\<T>(`col`: [Collection](globals.md#collection)\<T>): [Collection](globals.md#collection)\<T>
 
-*Defined in [clone.ts:17](https://github.com/zimmed/collection/blob/ac50137/src/clone.ts#L17)*
+*Defined in [clone.ts:17](https://github.com/zimmed/collection/blob/2d256cd/src/clone.ts#L17)*
 
 Clone an existing collection
 
@@ -454,7 +447,7 @@ ___
 
 ▸ **cloneDeep**\<T>(`col`: [Collection](globals.md#collection)\<T>): [Collection](globals.md#collection)\<T>
 
-*Defined in [clone.ts:30](https://github.com/zimmed/collection/blob/ac50137/src/clone.ts#L30)*
+*Defined in [clone.ts:30](https://github.com/zimmed/collection/blob/2d256cd/src/clone.ts#L30)*
 
 Clone an existing collection as well as the records.
 
@@ -480,7 +473,7 @@ ___
 
 ▸ **concat**\<T>(`col1`: [Collection](globals.md#collection)\<T>, `col2`: [Collection](globals.md#collection)\<T>): [Collection](globals.md#collection)\<T>
 
-*Defined in [concat.ts:15](https://github.com/zimmed/collection/blob/ac50137/src/concat.ts#L15)*
+*Defined in [concat.ts:15](https://github.com/zimmed/collection/blob/2d256cd/src/concat.ts#L15)*
 
 Concatenate two collections into a new, combined collection.
 
@@ -512,9 +505,9 @@ ___
 
 ### create
 
-▸ **create**\<T>(`initial?`: [CollectionMap](globals.md#collectionmap)\<T> \| [CollectionArray](globals.md#collectionarray)\<T>): [Collection](globals.md#collection)\<T>
+▸ **create**\<T>(`initial?`: [Collection](globals.md#collection)\<T> \| T[]): [Collection](globals.md#collection)\<T>
 
-*Defined in [create.ts:13](https://github.com/zimmed/collection/blob/ac50137/src/create.ts#L13)*
+*Defined in [create.ts:13](https://github.com/zimmed/collection/blob/2d256cd/src/create.ts#L13)*
 
 Create a new collection from an id map (object), an array of objects, or an existing collection.
 
@@ -535,7 +528,7 @@ Name | Type |
 
 Name | Type |
 ------ | ------ |
-`initial?` | [CollectionMap](globals.md#collectionmap)\<T> \| [CollectionArray](globals.md#collectionarray)\<T> |
+`initial?` | [Collection](globals.md#collection)\<T> \| T[] |
 
 **Returns:** [Collection](globals.md#collection)\<T>
 
@@ -545,7 +538,7 @@ ___
 
 ▸ **expand**\<T, M>(`base`: [Collection](globals.md#collection)\<T>, `collections`: M): [Collection](globals.md#collection)\<Obj\<{ id: T[\"id\"]  } & TransformTypes\<T, GetTypeMap\<*typeof* collections>>>>
 
-*Defined in [expand.ts:30](https://github.com/zimmed/collection/blob/ac50137/src/expand.ts#L30)*
+*Defined in [expand.ts:30](https://github.com/zimmed/collection/blob/2d256cd/src/expand.ts#L30)*
 
 Updates the collection by expanding ID references with their collection records.
 
@@ -573,7 +566,7 @@ console.log(expanded); //-> {
 Name | Type |
 ------ | ------ |
 `T` | [IGenericRecord](interfaces/igenericrecord.md) |
-`M` | CollectionEntryMap |
+`M` | [CollectionEntryMap](globals.md#collectionentrymap) |
 
 #### Parameters:
 
@@ -592,7 +585,7 @@ ___
 
 ▸ **filter**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `callback`: [IterateCallback](globals.md#iteratecallback)\<T, boolean>): T[]
 
-*Defined in [filter.ts:17](https://github.com/zimmed/collection/blob/ac50137/src/filter.ts#L17)*
+*Defined in [filter.ts:17](https://github.com/zimmed/collection/blob/2d256cd/src/filter.ts#L17)*
 
 Filter records in collection and return new array.
 
@@ -628,7 +621,7 @@ ___
 
 ▸ **find**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `predicate`: [FindPredicate](globals.md#findpredicate)\<T>): T \| undefined
 
-*Defined in [find.ts:13](https://github.com/zimmed/collection/blob/ac50137/src/find.ts#L13)*
+*Defined in [find.ts:13](https://github.com/zimmed/collection/blob/2d256cd/src/find.ts#L13)*
 
 Find record that matches given predicate.
 
@@ -660,7 +653,7 @@ ___
 
 ▸ **findIndex**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `predicate`: [FindPredicate](globals.md#findpredicate)\<T>): number
 
-*Defined in [find.ts:35](https://github.com/zimmed/collection/blob/ac50137/src/find.ts#L35)*
+*Defined in [find.ts:35](https://github.com/zimmed/collection/blob/2d256cd/src/find.ts#L35)*
 
 Find ordered index for record that matches given predicate.
 
@@ -694,7 +687,7 @@ ___
 
 ▸ **forEach**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `callback`: [IterateCallback](globals.md#iteratecallback)\<T, void>): void
 
-*Defined in [forEach.ts:15](https://github.com/zimmed/collection/blob/ac50137/src/forEach.ts#L15)*
+*Defined in [forEach.ts:15](https://github.com/zimmed/collection/blob/2d256cd/src/forEach.ts#L15)*
 
 Iterate over collection items using forEach syntax.
 
@@ -724,11 +717,73 @@ Name | Type |
 
 ___
 
+### getList
+
+▸ **getList**\<T>(`collection`: [Collection](globals.md#collection)\<T>): T[]
+
+*Defined in [getList.ts:14](https://github.com/zimmed/collection/blob/2d256cd/src/getList.ts#L14)*
+
+Get the order of collection IDs.
+
+**`example`** 
+```typescript
+ const collection = Collection.create([{ id: 'foo' }, { id: 'bar' }, { id: 'baz' }]);
+
+ Collection.getList(collection); //-> [{ id: 'foo' }, { id: 'bar' }, { id: 'baz' }]
+```
+
+#### Type parameters:
+
+Name | Type |
+------ | ------ |
+`T` | [IGenericRecord](interfaces/igenericrecord.md) |
+
+#### Parameters:
+
+Name | Type |
+------ | ------ |
+`collection` | [Collection](globals.md#collection)\<T> |
+
+**Returns:** T[]
+
+___
+
+### getOrder
+
+▸ **getOrder**\<T>(`collection`: [Collection](globals.md#collection)\<T>): Array\<keyof *typeof* collection>
+
+*Defined in [getOrder.ts:14](https://github.com/zimmed/collection/blob/2d256cd/src/getOrder.ts#L14)*
+
+Get the order of collection IDs.
+
+**`example`** 
+```typescript
+ const collection = Collection.create([{ id: 'foo' }, { id: 'bar' }, { id: 'baz' }]);
+
+ Collection.getOrder(collection); //-> ['foo', 'bar', 'baz'];
+```
+
+#### Type parameters:
+
+Name | Type |
+------ | ------ |
+`T` | [IGenericRecord](interfaces/igenericrecord.md) |
+
+#### Parameters:
+
+Name | Type |
+------ | ------ |
+`collection` | [Collection](globals.md#collection)\<T> |
+
+**Returns:** Array\<keyof *typeof* collection>
+
+___
+
 ### insert
 
 ▸ **insert**\<T>(`collection`: [Collection](globals.md#collection)\<T>, ...`records`: T[]): [Collection](globals.md#collection)\<T>
 
-*Defined in [insert.ts:16](https://github.com/zimmed/collection/blob/ac50137/src/insert.ts#L16)*
+*Defined in [insert.ts:16](https://github.com/zimmed/collection/blob/2d256cd/src/insert.ts#L16)*
 
 Insert record into the front of the order.
 
@@ -761,7 +816,7 @@ ___
 
 ▸ **insertAt**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `index`: number, ...`records`: T[]): [Collection](globals.md#collection)\<T>
 
-*Defined in [insert.ts:57](https://github.com/zimmed/collection/blob/ac50137/src/insert.ts#L57)*
+*Defined in [insert.ts:53](https://github.com/zimmed/collection/blob/2d256cd/src/insert.ts#L53)*
 
 Insert record into the ordered collection at the specified index
 
@@ -797,7 +852,7 @@ ___
 
 ▸ **insertOne**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `record`: T): [Collection](globals.md#collection)\<T>
 
-*Defined in [insert.ts:36](https://github.com/zimmed/collection/blob/ac50137/src/insert.ts#L36)*
+*Defined in [insert.ts:36](https://github.com/zimmed/collection/blob/2d256cd/src/insert.ts#L36)*
 
 Same as `insert` but optimized for single record insertion.
 
@@ -824,7 +879,7 @@ ___
 
 ▸ **insertOneAt**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `index`: number, `record`: T): [Collection](globals.md#collection)\<T>
 
-*Defined in [insert.ts:72](https://github.com/zimmed/collection/blob/ac50137/src/insert.ts#L72)*
+*Defined in [insert.ts:84](https://github.com/zimmed/collection/blob/2d256cd/src/insert.ts#L84)*
 
 Same as `insert.at` but optimized for single record insertion.
 
@@ -852,7 +907,7 @@ ___
 
 ▸ **iterate**\<T>(`collection`: [Collection](globals.md#collection)\<T>): [Iterable](globals.md#iterable)\<T>
 
-*Defined in [iterate.ts:26](https://github.com/zimmed/collection/blob/ac50137/src/iterate.ts#L26)*
+*Defined in [iterate.ts:26](https://github.com/zimmed/collection/blob/2d256cd/src/iterate.ts#L26)*
 
 Get an iterator for the ordered collection.
 
@@ -887,7 +942,7 @@ ___
 
 ▸ **join**\<T, M>(`base`: [Collection](globals.md#collection)\<T>, `collections`: M): TransformTypes\<T, GetTypeMap\<*typeof* collections>>[]
 
-*Defined in [join.ts:28](https://github.com/zimmed/collection/blob/ac50137/src/join.ts#L28)*
+*Defined in [join.ts:28](https://github.com/zimmed/collection/blob/2d256cd/src/join.ts#L28)*
 
 Returns array of collection records with id refs replaced by the actual records.
 
@@ -913,7 +968,7 @@ console.log(joinedAys[1]); //-> {
 Name | Type |
 ------ | ------ |
 `T` | [IGenericRecord](interfaces/igenericrecord.md) |
-`M` | CollectionEntryMap |
+`M` | [CollectionEntryMap](globals.md#collectionentrymap) |
 
 #### Parameters:
 
@@ -932,7 +987,7 @@ ___
 
 ▸ **length**\<T>(`collection`: [Collection](globals.md#collection)\<T>): number
 
-*Defined in [length.ts:13](https://github.com/zimmed/collection/blob/ac50137/src/length.ts#L13)*
+*Defined in [length.ts:13](https://github.com/zimmed/collection/blob/2d256cd/src/length.ts#L13)*
 
 Get the number of items in the collection.
 
@@ -963,7 +1018,7 @@ ___
 
 ▸ **map**\<T, A>(`collection`: [Collection](globals.md#collection)\<T>, `callback`: [IterateCallback](globals.md#iteratecallback)\<T, A>): A[]
 
-*Defined in [map.ts:17](https://github.com/zimmed/collection/blob/ac50137/src/map.ts#L17)*
+*Defined in [map.ts:17](https://github.com/zimmed/collection/blob/2d256cd/src/map.ts#L17)*
 
 Map over records in collection and return new array.
 
@@ -996,11 +1051,78 @@ Name | Type |
 
 ___
 
+### move
+
+▸ **move**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `id`: T[\"id\"], `index`: number): [Collection](globals.md#collection)\<T>
+
+*Defined in [move.ts:21](https://github.com/zimmed/collection/blob/2d256cd/src/move.ts#L21)*
+
+Pick record by id and insert it into the index provided.
+
+Note: Because the function squashes the empty space left by the pick, if the specified index is greater than the starting index,
+the final index of the record will be the specified index - 1.
+
+**`example`** 
+```typescript
+ const collection = Collection.create([{ id: 'foo', num: 1 }, { id: 'bar', num: 5 }, { id: 'baz', num: 10 }]);
+
+ Collection.move(collection, 'foo', 2);
+ console.log(Collection.getList(collection)); //-> [{ id: 'bar', num: 5 }, { id: 'foo', num: 1 }, { id: 'baz', num: 10 }]
+ Collection.move(collection, 'baz', 1);
+ console.log(Collection.getList(collection)); //-> [{ id: 'bar', num: 5 }, { id: 'baz', num: 10 }, { id: 'foo', num: 1 }]
+```
+
+#### Type parameters:
+
+Name | Type |
+------ | ------ |
+`T` | [IGenericRecord](interfaces/igenericrecord.md) |
+
+#### Parameters:
+
+Name | Type |
+------ | ------ |
+`collection` | [Collection](globals.md#collection)\<T> |
+`id` | T[\"id\"] |
+`index` | number |
+
+**Returns:** [Collection](globals.md#collection)\<T>
+
+___
+
+### move.at
+
+▸ **moveAt**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `from`: number, `to`: number): [Collection](globals.md#collection)\<T>
+
+*Defined in [move.ts:34](https://github.com/zimmed/collection/blob/2d256cd/src/move.ts#L34)*
+
+Same as `move` but moves record at first index to second index.
+
+**`name`** move.at
+
+#### Type parameters:
+
+Name | Type |
+------ | ------ |
+`T` | [IGenericRecord](interfaces/igenericrecord.md) |
+
+#### Parameters:
+
+Name | Type |
+------ | ------ |
+`collection` | [Collection](globals.md#collection)\<T> |
+`from` | number |
+`to` | number |
+
+**Returns:** [Collection](globals.md#collection)\<T>
+
+___
+
 ### pop
 
 ▸ **pop**\<T>(`collection`: [Collection](globals.md#collection)\<T>): T \| undefined
 
-*Defined in [pop.ts:14](https://github.com/zimmed/collection/blob/ac50137/src/pop.ts#L14)*
+*Defined in [pop.ts:14](https://github.com/zimmed/collection/blob/2d256cd/src/pop.ts#L14)*
 
 Pop the last ordered record from the collection.
 
@@ -1032,7 +1154,7 @@ ___
 
 ▸ **reduce**\<T, A>(`collection`: [Collection](globals.md#collection)\<T>, `callback`: [ReduceCallback](globals.md#reducecallback)\<T, A>, `initialValue`: A): A
 
-*Defined in [reduce.ts:17](https://github.com/zimmed/collection/blob/ac50137/src/reduce.ts#L17)*
+*Defined in [reduce.ts:17](https://github.com/zimmed/collection/blob/2d256cd/src/reduce.ts#L17)*
 
 Reduce records in collection
 
@@ -1070,7 +1192,7 @@ ___
 
 ▸ **remove**\<T>(`collection`: [Collection](globals.md#collection)\<T>, ...`recordIds`: Array\<keyof *typeof* collection>): T[]
 
-*Defined in [remove.ts:15](https://github.com/zimmed/collection/blob/ac50137/src/remove.ts#L15)*
+*Defined in [remove.ts:15](https://github.com/zimmed/collection/blob/2d256cd/src/remove.ts#L15)*
 
 Remove the specified IDs from the collection and return the associated records.
 
@@ -1103,7 +1225,7 @@ ___
 
 ▸ **removeAt**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `index`: number): T \| undefined
 
-*Defined in [remove.ts:101](https://github.com/zimmed/collection/blob/ac50137/src/remove.ts#L101)*
+*Defined in [remove.ts:101](https://github.com/zimmed/collection/blob/2d256cd/src/remove.ts#L101)*
 
 Remove the record at the specified ordered index and return it.
 
@@ -1138,7 +1260,7 @@ ___
 
 ▸ **removeBy**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `predicate`: [FindPredicate](globals.md#findpredicate)\<T>): T[]
 
-*Defined in [remove.ts:69](https://github.com/zimmed/collection/blob/ac50137/src/remove.ts#L69)*
+*Defined in [remove.ts:69](https://github.com/zimmed/collection/blob/2d256cd/src/remove.ts#L69)*
 
 Remove the matching records from the collection and return them.
 
@@ -1173,7 +1295,7 @@ ___
 
 ▸ **removeOne**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `recordId`: keyof *typeof* collection): undefined \| T
 
-*Defined in [remove.ts:40](https://github.com/zimmed/collection/blob/ac50137/src/remove.ts#L40)*
+*Defined in [remove.ts:40](https://github.com/zimmed/collection/blob/2d256cd/src/remove.ts#L40)*
 
 Same as `remove` but optimized to handle a single record ID at a time.
 
@@ -1200,7 +1322,7 @@ ___
 
 ▸ **reverse**\<T>(`collection`: [Collection](globals.md#collection)\<T>): *typeof* collection
 
-*Defined in [reverse.ts:7](https://github.com/zimmed/collection/blob/ac50137/src/reverse.ts#L7)*
+*Defined in [reverse.ts:7](https://github.com/zimmed/collection/blob/2d256cd/src/reverse.ts#L7)*
 
 Reverse the order of collection IDs.
 
@@ -1224,7 +1346,7 @@ ___
 
 ▸ **search**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `compare`: [SearchCompare](globals.md#searchcompare)\<T>): T \| undefined
 
-*Defined in [search.ts:20](https://github.com/zimmed/collection/blob/ac50137/src/search.ts#L20)*
+*Defined in [search.ts:20](https://github.com/zimmed/collection/blob/2d256cd/src/search.ts#L20)*
 
 Find record that matches given compare method
  Rather than searching in O(n) time using `find`, if the collection is already sorted, you can use
@@ -1261,7 +1383,7 @@ ___
 
 ▸ **searchIndex**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `compare`: [SearchCompare](globals.md#searchcompare)\<T>): number
 
-*Defined in [search.ts:44](https://github.com/zimmed/collection/blob/ac50137/src/search.ts#L44)*
+*Defined in [search.ts:44](https://github.com/zimmed/collection/blob/2d256cd/src/search.ts#L44)*
 
 Find ordered index for record that matches given compare method.
  Like search, works in O(log n) time, but is not gauranteed to find the first match from the left if a non-specific
@@ -1295,17 +1417,18 @@ ___
 
 ### setOrder
 
-▸ **setOrder**\<T>(`collection`: [Collection](globals.md#collection)\<T>): Array\<keyof *typeof* collection>
+▸ **setOrder**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `keys`: Array\<keyof *typeof* collection>): *typeof* collection
 
-*Defined in [getOrder.ts:13](https://github.com/zimmed/collection/blob/ac50137/src/getOrder.ts#L13)*
+*Defined in [setOrder.ts:14](https://github.com/zimmed/collection/blob/2d256cd/src/setOrder.ts#L14)*
 
-Get the order of collection IDs.
+Set the order of the collection from the specified array of IDs.
 
 **`example`** 
 ```typescript
  const collection = Collection.create([{ id: 'foo' }, { id: 'bar' }, { id: 'baz' }]);
 
- Collection.getOrder(collection); //-> ['foo', 'bar', 'baz'];
+ Collection.setOrder(collection, ['baz', 'bar', 'foo']);
+ console.log(Array.from(Collection.iterate(collection))); //-> [{ id: 'baz' }, { id: 'bar' }, { id: 'foo' }]
 ```
 
 #### Type parameters:
@@ -1319,8 +1442,9 @@ Name | Type |
 Name | Type |
 ------ | ------ |
 `collection` | [Collection](globals.md#collection)\<T> |
+`keys` | Array\<keyof *typeof* collection> |
 
-**Returns:** Array\<keyof *typeof* collection>
+**Returns:** *typeof* collection
 
 ___
 
@@ -1328,7 +1452,7 @@ ___
 
 ▸ **shift**\<T>(`collection`: [Collection](globals.md#collection)\<T>): T \| undefined
 
-*Defined in [shift.ts:14](https://github.com/zimmed/collection/blob/ac50137/src/shift.ts#L14)*
+*Defined in [shift.ts:14](https://github.com/zimmed/collection/blob/2d256cd/src/shift.ts#L14)*
 
 Shift/dequeue the first ordered record from the collection.
 
@@ -1360,7 +1484,7 @@ ___
 
 ▸ **slice**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `start?`: number, `end?`: undefined \| number): T[]
 
-*Defined in [slice.ts:14](https://github.com/zimmed/collection/blob/ac50137/src/slice.ts#L14)*
+*Defined in [slice.ts:14](https://github.com/zimmed/collection/blob/2d256cd/src/slice.ts#L14)*
 
 Concatenate two collections into a new, combined collection.
 
@@ -1394,7 +1518,7 @@ ___
 
 ▸ **sort**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `compare?`: undefined \| (a: T, b: T) => 0 \| -1 \| 1): *typeof* collection
 
-*Defined in [sort.ts:15](https://github.com/zimmed/collection/blob/ac50137/src/sort.ts#L15)*
+*Defined in [sort.ts:15](https://github.com/zimmed/collection/blob/2d256cd/src/sort.ts#L15)*
 
 Sort the order of records in the collection with the specified compare function.
 If no compare function specified, will sort by ID in ascending alphabetical order.
@@ -1428,7 +1552,7 @@ ___
 
 ▸ **sortedInsert**\<T>(`collection`: [Collection](globals.md#collection)\<T>, ...`args`: Array\<T \| [SortCompare](globals.md#sortcompare)\<T>>): [Collection](globals.md#collection)\<T>
 
-*Defined in [sortedInsert.ts:22](https://github.com/zimmed/collection/blob/ac50137/src/sortedInsert.ts#L22)*
+*Defined in [sortedInsert.ts:22](https://github.com/zimmed/collection/blob/2d256cd/src/sortedInsert.ts#L22)*
 
 Insertion sort: insert record into sorted order using the specified compare function, or the default, alphabetical ID sort.
 
@@ -1465,9 +1589,9 @@ ___
 
 ### sortedInsert.one
 
-▸ **one**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `record`: T, `compare?`: [SortCompare](globals.md#sortcompare)\<T>): [Collection](globals.md#collection)\<T>
+▸ **sortedInsertOne**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `record`: T, `compare?`: [SortCompare](globals.md#sortcompare)\<T>): [Collection](globals.md#collection)\<T>
 
-*Defined in [sortedInsert.ts:44](https://github.com/zimmed/collection/blob/ac50137/src/sortedInsert.ts#L44)*
+*Defined in [sortedInsert.ts:44](https://github.com/zimmed/collection/blob/2d256cd/src/sortedInsert.ts#L44)*
 
 Same as `sortInsert` but optimized for inserting one record at a time.
 
@@ -1495,7 +1619,7 @@ ___
 
 ▸ **splice**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `start?`: number, `count?`: undefined \| number): T[]
 
-*Defined in [splice.ts:14](https://github.com/zimmed/collection/blob/ac50137/src/splice.ts#L14)*
+*Defined in [splice.ts:14](https://github.com/zimmed/collection/blob/2d256cd/src/splice.ts#L14)*
 
 Concatenate two collections into a new, combined collection.
 
@@ -1525,11 +1649,136 @@ Name | Type | Default value |
 
 ___
 
+### swap.at.with
+
+▸ **swapAt**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `x`: number, `b`: T[\"id\"]): [Collection](globals.md#collection)\<T>
+
+*Defined in [swap.ts:68](https://github.com/zimmed/collection/blob/2d256cd/src/swap.ts#L68)*
+
+Same as `swap` but swaps record at given index with provided ID
+
+**`name`** swap.at.with
+
+#### Type parameters:
+
+Name | Type |
+------ | ------ |
+`T` | [IGenericRecord](interfaces/igenericrecord.md) |
+
+#### Parameters:
+
+Name | Type |
+------ | ------ |
+`collection` | [Collection](globals.md#collection)\<T> |
+`x` | number |
+`b` | T[\"id\"] |
+
+**Returns:** [Collection](globals.md#collection)\<T>
+
+___
+
+### swap.at.with.index
+
+▸ **swapAtIndex**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `x`: number, `y`: number): [Collection](globals.md#collection)\<T>
+
+*Defined in [swap.ts:87](https://github.com/zimmed/collection/blob/2d256cd/src/swap.ts#L87)*
+
+Same as `swap` but swaps record at given index with provided ID
+
+**`name`** swap.at.with.index
+
+#### Type parameters:
+
+Name | Type |
+------ | ------ |
+`T` | [IGenericRecord](interfaces/igenericrecord.md) |
+
+#### Parameters:
+
+Name | Type |
+------ | ------ |
+`collection` | [Collection](globals.md#collection)\<T> |
+`x` | number |
+`y` | number |
+
+**Returns:** [Collection](globals.md#collection)\<T>
+
+___
+
+### swap.with
+
+▸ **swap**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `a`: T[\"id\"], `b`: T[\"id\"]): [Collection](globals.md#collection)\<T>
+
+*Defined in [swap.ts:23](https://github.com/zimmed/collection/blob/2d256cd/src/swap.ts#L23)*
+
+Pick record by id and insert it into the index provided.
+
+Note: Because the function squashes the empty space left by the pick, if the specified index is greater than the starting index,
+the final index of the record will be the specified index - 1.
+
+**`name`** swap.with
+
+**`example`** 
+```typescript
+ const collection = Collection.create([{ id: 'foo', num: 1 }, { id: 'bar', num: 5 }, { id: 'baz', num: 10 }]);
+
+ Collection.move(collection, 'foo', 2);
+ console.log(Collection.getList(collection)); //-> [{ id: 'bar', num: 5 }, { id: 'foo', num: 1 }, { id: 'baz', num: 10 }]
+ Collection.move(collection, 'baz', 1);
+ console.log(Collection.getList(collection)); //-> [{ id: 'bar', num: 5 }, { id: 'baz', num: 10 }, { id: 'foo', num: 1 }]
+```
+
+#### Type parameters:
+
+Name | Type |
+------ | ------ |
+`T` | [IGenericRecord](interfaces/igenericrecord.md) |
+
+#### Parameters:
+
+Name | Type |
+------ | ------ |
+`collection` | [Collection](globals.md#collection)\<T> |
+`a` | T[\"id\"] |
+`b` | T[\"id\"] |
+
+**Returns:** [Collection](globals.md#collection)\<T>
+
+___
+
+### swap.with.index
+
+▸ **swapIndex**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `a`: T[\"id\"], `y`: number): [Collection](globals.md#collection)\<T>
+
+*Defined in [swap.ts:47](https://github.com/zimmed/collection/blob/2d256cd/src/swap.ts#L47)*
+
+Same as `swap` but swaps record with provided index
+
+**`name`** swap.with.index
+
+#### Type parameters:
+
+Name | Type |
+------ | ------ |
+`T` | [IGenericRecord](interfaces/igenericrecord.md) |
+
+#### Parameters:
+
+Name | Type |
+------ | ------ |
+`collection` | [Collection](globals.md#collection)\<T> |
+`a` | T[\"id\"] |
+`y` | number |
+
+**Returns:** [Collection](globals.md#collection)\<T>
+
+___
+
 ### update
 
-▸ **update**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `callback`: [UpdateCallback](globals.md#updatecallback)\<T>): *typeof* collection
+▸ **update**\<T>(`collection`: [Collection](globals.md#collection)\<T>, `callback`: [IterateCallback](globals.md#iteratecallback)\<T, Partial\<T> \| undefined>): *typeof* collection
 
-*Defined in [update.ts:20](https://github.com/zimmed/collection/blob/ac50137/src/update.ts#L20)*
+*Defined in [update.ts:18](https://github.com/zimmed/collection/blob/2d256cd/src/update.ts#L18)*
 
 Map over and update records in collection.
 
@@ -1556,6 +1805,6 @@ Name | Type |
 Name | Type |
 ------ | ------ |
 `collection` | [Collection](globals.md#collection)\<T> |
-`callback` | [UpdateCallback](globals.md#updatecallback)\<T> |
+`callback` | [IterateCallback](globals.md#iteratecallback)\<T, Partial\<T> \| undefined> |
 
 **Returns:** *typeof* collection

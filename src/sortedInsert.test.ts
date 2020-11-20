@@ -73,15 +73,17 @@ describe('sortedInsert()', () => {
     expect(col.bar.data).toBe(-1);
   });
 
-  it('should have a `one` method optimized for sortInserting a single record', () => {
-    expect(cache.get(col).keys.length).toBe(2);
-    expect(sortedInsert.one(col, a, comp)).toBe(col);
-    expect(cache.get(col).keys).toEqual(['foo', 'baz', 'bar']);
-    expect(col.baz.data).toBe(7);
-    expect(col.bar.data).toBe(10);
-    expect(sortedInsert.one(col, b, comp)).toBe(col);
-    expect(cache.get(col).keys).toEqual(['bar', 'foo', 'baz']);
-    expect(col.bar.data).toBe(-1);
-    expect(sortedInsert.one(create(), { id: 'foo' })).toEqual({ foo: { id: 'foo' } });
+  describe('sortedInsert.one()', () => {
+    it('should sort-insert a single record', () => {
+      expect(cache.get(col).keys.length).toBe(2);
+      expect(sortedInsert.one(col, a, comp)).toBe(col);
+      expect(cache.get(col).keys).toEqual(['foo', 'baz', 'bar']);
+      expect(col.baz.data).toBe(7);
+      expect(col.bar.data).toBe(10);
+      expect(sortedInsert.one(col, b, comp)).toBe(col);
+      expect(cache.get(col).keys).toEqual(['bar', 'foo', 'baz']);
+      expect(col.bar.data).toBe(-1);
+      expect(sortedInsert.one(create(), { id: 'foo' })).toEqual({ foo: { id: 'foo' } });
+    });
   });
 });

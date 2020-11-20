@@ -41,11 +41,15 @@ export default function sortedInsert<T extends IGenericRecord>(
  *
  * @name sortedInsert.one
  */
-function one<T extends IGenericRecord>(collection: Collection<T>, record: T, compare?: SortCompare<T>): Collection<T> {
+function sortedInsertOne<T extends IGenericRecord>(
+  collection: Collection<T>,
+  record: T,
+  compare?: SortCompare<T>
+): Collection<T> {
   const cmp: (r: T) => SortCompare<keyof typeof collection> | undefined = (r) =>
     compare && ((_, b) => compare(r, collection[b]));
 
   return insertionSort(collection, record, cmp(record));
 }
 
-sortedInsert.one = one;
+sortedInsert.one = sortedInsertOne;

@@ -1,4 +1,4 @@
-**[collection - v0.2.0](README.md)**
+**[collection - v0.3.1](README.md)**
 
 > [Globals](globals.md)
 
@@ -57,32 +57,40 @@ const collection = Collection.create(records);
 console.log(collection); //-> { "89333e79-3257-44ce-a32a-23ec902190e4": { id: "89333e79-3257-44ce-a32a-23ec902190e4", foo: 0, bar: '' }, ... }
 ```
 
-### Collections are Objects
+### Collections as Objects
 
 Collection objects are really just plain objects with IDs mapped to records, and can be used the same way.
 
 ```typescript
-console.log(collection['89333e79-3257-44ce-a32a-23ec902190e4']); //-> { id: "89333e79-3257-44ce-a32a-23ec902190e4", foo: 0, bar: '' }
+console.log(collectionAsMap['89333e79-3257-44ce-a32a-23ec902190e4']); //-> { id: "89333e79-3257-44ce-a32a-23ec902190e4", foo: 0, bar: '' }
 ```
 
-### Collection Ordering
+### Collections as Arrays
 
-Collections have special, secret instance data that allows them to be used like arrays without
+```typescript
+console.log(collectionAsMap.at(collection, 0)); //-> { id: "89333e79-3257-44ce-a32a-23ec902190e4", foo: 0, bar: '' }
+```
+
+Collection maps have special, secret instance data that allows them to be used like arrays without
 expensive `Object.keys/entries/values` calls each time you want to iterate. Additionally, the
 extended array behavior maintains explicit ordering which will not be reflected if `Object.keys`
-is called on the collection object. Instead, you should use the provided Collection methods:
+is called on the collection object. Instead, you should use the provided Collection methods.
+
+If you want to change the collection's iteration order, you may want to use the following methods:
 
 ```typescript
 Collection.sort(collection, (a, b) => (a.foo < b.foo ? -1 : a.foo > b.foo ? 1 : 0)); // Sort collection order by `foo` prop
 const order = Collection.getOrder(collection); // Provides ordered array of collection keys.
 Collection.reverse(collection); // Reverse order
 Collection.setOrder(collection, order); // Restore previous order
+Collection.getList(collection); // Get all records as an ordered array (alias: toArray)
 ```
 
 `getOrder` and `setOrder` can thus be used to save and restore the order to a collection between runtimes if needed.
-However, it would be better to just save and restore the collection as an array in that case.
+However, it would be better to save the state as an array in that case (`getList`).
 
-Here are some more functions that can help you maintain the desired order of your collection:
+Here are some functions that can help you maintain the desired order of your
+collection.
 
 ```typescript
 // Add records to the end of the ordered list (compare to array.push)
@@ -122,12 +130,13 @@ const index2 = Collection.search.index(collection, (record) => (record.foo > 500
 const record = Collection.search(collection, (record) => (record.foo > 500 ? -1 : record.foo < 500 ? 1 : 0));
 ```
 
-With the exception of `insertAt` and `sortInsert`, record-adding functions will update existing records (matching IDs)
-without changing their position in the ordered array.
+Record-adding functions will update existing records (matching IDs) without
+changing their position in the ordered array.
 
-### Collections are Arrays
+### Un-Ordered Collections
 
-If the order of the records don't matter as much, you may prefer these functions for managing your collection:
+If the order of the records don't matter as much, you may prefer these
+functions for managing your collection:
 
 ```typescript
 // Add records
@@ -139,8 +148,10 @@ Collection.remove.by(collection, (record) => record.foo > 0);
 const record = Collection.find(collection, (record) => record.foo === 500);
 ```
 
-There are several options for iterating over the items in your collection, all of which do so with respect
-to the record order.
+### Collection Iteration
+
+There are several options for iterating over collections of records, all of
+which do so with respect to the record order.
 
 ```typescript
 for (const record of Collection.iterate(collection)) {
@@ -156,7 +167,8 @@ for (let i = 0, l = Collection.length(collection); i < l; i++) {
 }
 ```
 
-There are also standard functional array methods that use the same, familiar callback signatures.
+There are also standard functional array methods that use the same, familiar
+callback signatures.
 
 ```typescript
 const zeroFoo = Collection.reduce(
@@ -177,6 +189,9 @@ Collection.update(collection, record => {
 });
 ```
 
+_Note: Keep in mind that the third argument of the functional callback that
+normally returns the entire array, here provides only the array of `id`s._
+
 ### More Fun
 
 ```typescript
@@ -185,9 +200,6 @@ const newCollection = Collection.concat(collectionA, collectionB);
 
 // Get record count in collection
 const count = Collection.length(collection);
-
-// Get record at provided ordered index
-const record = Collection.at(collection, 3);
 
 // Create copy of collection (does not clone individual records)
 const copy = Collection.clone(collection);
@@ -200,13 +212,26 @@ const slice = Collection.slice(collection, 0, 5); // First 5 ordered records
 
 // Splice an area of the ordered collection
 const splice = Collection.splice(collection, 0, 5); // Removes the first 5 records from the collection and returns them
+
+// Get collection as ordered array of records
+//   Alias: toArray
+const records = Collection.getList(collection);
+
+// Move record to position
+Collection.move(collection, 'key1', 3);
+Collection.move.at(collection, 5, 0);
+
+// Swap two ordered records
+Collection.swap(collection, 'key1', 'key2');
+Collection.swap.with.index(collection, 'key1', 5);
+Collection.swap.at.with.index(collection, 3, 1);
 ```
 
 ### Join / Expand Collections by ID References
 
-Perform SQL-like joins between collections with `join` function. Returns an array
-of expanded records from the provided collection. The second argument is a map of
-property names to their associated collection.
+Perform SQL-like joins between collections with `join` function. Returns an
+array of expanded records from the provided collection. The second argument
+is a map of property names to their associated collection.
 
 #### Notes
 

@@ -1,4 +1,4 @@
-import { Collection, CollectionData, KeyOf, ID } from './types';
+import { Collection, IGenericRecord, CollectionData, IdOf, ID } from './types';
 
 /** @internal */
 let cache = new WeakMap<Collection, CollectionData<ID>>();
@@ -9,8 +9,8 @@ export default {
     return cache;
   },
 
-  get<T extends Collection>(collection: T): CollectionData<KeyOf<T>> {
-    const data = cache.get(collection) as CollectionData<KeyOf<T>>;
+  get<T extends IGenericRecord>(collection: Collection<T>): CollectionData<IdOf<T>> {
+    const data = cache.get(collection) as CollectionData<IdOf<T>>;
 
     if (!data) {
       throw new Error('No private data exists for collection');
@@ -18,11 +18,11 @@ export default {
     return data;
   },
 
-  set<T extends Collection>(collection: T, data: CollectionData<keyof typeof collection>): void {
-    cache.set(collection, data as CollectionData<KeyOf<T>>);
+  set<T extends IGenericRecord>(collection: Collection<T>, data: CollectionData<IdOf<T>>): void {
+    cache.set(collection, data as CollectionData<IdOf<T>>);
   },
 
-  del<T extends Collection>(collection: T): void {
+  del<T extends IGenericRecord>(collection: Collection<T>): void {
     cache.delete(collection);
   },
 

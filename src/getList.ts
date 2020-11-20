@@ -8,9 +8,9 @@ import cache from './cache';
  * ```typescript
  *  const collection = Collection.create([{ id: 'foo' }, { id: 'bar' }, { id: 'baz' }]);
  *
- *  Collection.getOrder(collection); //-> ['foo', 'bar', 'baz'];
+ *  Collection.getList(collection); //-> [{ id: 'foo' }, { id: 'bar' }, { id: 'baz' }]
  * ```
  */
-export default function getOrder<T extends IGenericRecord>(collection: Collection<T>): Array<keyof typeof collection> {
-  return cache.get(collection).keys.slice(0);
+export default function getList<T extends IGenericRecord>(collection: Collection<T>): T[] {
+  return cache.get(collection).keys.map((k) => collection[k]);
 }

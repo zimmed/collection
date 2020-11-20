@@ -7,30 +7,22 @@ export interface IGenericRecord {
 
 export type CollectionData<T> = { keys: T[] };
 
-export type CollectionMap<T extends IGenericRecord = IGenericRecord> = Record<IGenericRecord['id'], T>;
-
-export type CollectionArray<T extends IGenericRecord = IGenericRecord> = Array<T>;
-
-export type Collection<T extends IGenericRecord = IGenericRecord> = CollectionMap<T>;
-
-export type SortCompare<T> = (a: T, b: T) => 0 | 1 | -1;
-
-export type SearchCompare<T> = (record: T) => 0 | 1 | -1;
+export type Collection<T extends IGenericRecord = IGenericRecord> = Record<IGenericRecord['id'], T>;
 
 export type ReduceCallback<T extends IGenericRecord, A = any> = (
   accum: A,
   record: T,
   i: number,
-  ids: Array<KeyOf<Collection<T>>>
+  ids: Array<IdOf<T>>
 ) => A;
+
+export type IterateCallback<T extends IGenericRecord, A = any> = (record: T, i: number, ids: Array<IdOf<T>>) => A;
+
+export type SortCompare<T> = (a: T, b: T) => 0 | 1 | -1;
+
+export type SearchCompare<T> = (record: T) => 0 | 1 | -1;
 
 export type FindPredicate<T extends IGenericRecord> = (record: T) => boolean;
-
-export type IterateCallback<T extends IGenericRecord, A = any> = (
-  record: T,
-  i: number,
-  ids: Array<KeyOf<Collection<T>>>
-) => A;
 
 export type IdOf<T> = T extends { id: infer I } ? I : never;
 
@@ -42,11 +34,7 @@ export type KeyOf<C extends Collection> = C extends { [key: string]: any }
 
 export type Ref<N extends string, T extends IGenericRecord> = T extends { id: infer I } ? { name: N; id: I } : never;
 
-export type RefForCollection<N extends string, C> = C extends CollectionMap<infer T>
-  ? Ref<N, T>
-  : C extends CollectionArray<infer T>
-  ? Ref<N, T>
-  : never;
+export type RefForCollection<N extends string, C> = C extends Collection<infer T> ? Ref<N, T> : never;
 
 export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
@@ -84,10 +72,8 @@ export type TransformTypes<T, KeyMap extends object> = T extends Array<infer E>
   ? TransformedArray<E, '', KeyMap>
   : MapTypes<{ [P in keyof T]: TransformedValue<Exclude<T[P], undefined>, P, KeyMap> }, KeyMap>;
 
-/** @internal */
 export type CollectionEntry<C extends Collection = Collection> = C | C[];
 
-/** @internal */
 export type CollectionEntryMap<C extends Collection = Collection> = Record<string, CollectionEntry<C>>;
 
 /** @internal */

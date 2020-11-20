@@ -1,4 +1,4 @@
-import { CollectionMap, CollectionArray, Collection, IGenericRecord } from './types';
+import { Collection, IGenericRecord, IdOf } from './types';
 import cache from './cache';
 
 /**
@@ -10,16 +10,14 @@ import cache from './cache';
  *  console.log(Collection.create({ foo: { id: 'foo' }, bar: { id: 'bar' } })); //-> { foo: { id: 'foo' }, bar: { id: 'bar' } }
  * ```
  */
-export default function create<T extends IGenericRecord>(
-  initial?: CollectionMap<T> | CollectionArray<T>
-): Collection<T> {
+export default function create<T extends IGenericRecord>(initial?: Collection<T> | T[]): Collection<T> {
   const collection =
     initial && Array.isArray(initial)
-      ? initial.reduce((out: CollectionMap<T>, value: T) => ({ ...out, [value.id]: value }), {})
+      ? initial.reduce((out: Collection<T>, value: T) => ({ ...out, [value.id]: value }), {})
       : initial
       ? { ...initial }
       : {};
-  const keys = Object.keys(collection);
+  const keys = Object.keys(collection) as IdOf<T>[];
 
   cache.set(collection, { keys });
   return collection;

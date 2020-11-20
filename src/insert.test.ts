@@ -64,16 +64,16 @@ describe('insert()', () => {
       expect(insert.at(col, 1, a)).toBe(col);
       expect(cache.get(col).keys).toEqual(['foo', 'baz', 'bar']);
       expect(insert.at(col, 1, b)).toBe(col);
-      expect(cache.get(col).keys).toEqual(['foo', 'bar', 'baz']);
-      expect(insert.at(col, 2, { id: 'foo', data: 22 })).toBe(col);
-      expect(cache.get(col).keys).toEqual(['bar', 'baz', 'foo']);
+      expect(cache.get(col).keys).toEqual(['foo', 'baz', 'bar']);
+      expect(insert.at(col, 4, { id: 'foo', data: 22 })).toBe(col);
+      expect(cache.get(col).keys).toEqual(['foo', 'baz', 'bar']);
       expect(col.foo.data).toBe(22);
     });
 
     it('should insert the given records at the specified index', () => {
       expect(cache.get(col).keys).toEqual(['foo', 'bar']);
       expect(insert.at(col, 0, a, b, { id: 'eggs', data: 2 })).toBe(col);
-      expect(cache.get(col).keys).toEqual(['baz', 'bar', 'eggs', 'foo']);
+      expect(cache.get(col).keys).toEqual(['baz', 'eggs', 'foo', 'bar']);
     });
   });
 
@@ -83,10 +83,12 @@ describe('insert()', () => {
       expect(insert.one.at(col, 1, a)).toBe(col);
       expect(cache.get(col).keys).toEqual(['foo', 'baz', 'bar']);
       expect(insert.one.at(col, 1, b)).toBe(col);
-      expect(cache.get(col).keys).toEqual(['foo', 'bar', 'baz']);
-      expect(insert.one.at(col, 2, { id: 'foo', data: 22 })).toBe(col);
-      expect(cache.get(col).keys).toEqual(['bar', 'baz', 'foo']);
-      expect(col.foo.data).toBe(22);
+      expect(cache.get(col).keys).toEqual(['foo', 'baz', 'bar']);
+      expect(insert.one.at(col, 4, { id: 'foo', data: 22 })).toBe(col);
+      expect(cache.get(col).keys).toEqual(['foo', 'baz', 'bar']);
+      expect(insert.one.at(col, 4, { id: 'spam', data: 2 })).toBe(col);
+      expect(cache.get(col).keys).toEqual(['foo', 'baz', 'bar', 'spam']);
+      expect(col.spam.data).toBe(2);
     });
   });
 });

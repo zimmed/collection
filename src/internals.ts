@@ -77,39 +77,78 @@ export function insertionSort<T extends IGenericRecord>(
   compare?: SortCompare<keyof typeof collection>,
   data = cache.get(collection)
 ): Collection<T> {
-  const index = data.keys.length ? findNearestIndex(data.keys, record.id as keyof typeof collection, compare) : 0;
+  if (!data.keys.length) {
+    data.keys.push(record.id as IdOf<T>);
+    collection[record.id] = record;
+    return collection;
+  }
 
-  return insertRecord(collection, record, index, data);
+  return insertRecord(
+    collection,
+    record,
+    findNearestIndex(data.keys, record.id as keyof typeof collection, compare),
+    data.keys,
+    true
+  );
 }
 
 /** @internal */
 export function insertRecord<T extends IGenericRecord>(
   collection: Collection<T>,
   record: T,
-  index: number,
-  data = cache.get(collection)
+  index = 0,
+  keys = cache.get(collection).keys,
+  force = false
 ): Collection<T> {
-  let start;
+  const { id } = record;
 
-  if (collection[record.id]) {
-    start = (data.keys as IdOf<T>[]).indexOf(record.id as IdOf<T>);
-  } else {
-    start = data.keys.length;
-    data.keys.length += 1;
+  if (!collection[id]) {
+    if (!index) keys.unshift(id as IdOf<T>);
+    else {
+      keys.length += 1;
+      for (let i = keys.length - 1, l = index; i >= l; i--) {
+        keys[i] = keys[i - 1];
+      }
+      keys[index < keys.length - 1 ? index : keys.length - 1] = id as IdOf<T>;
+    }
+  } else if (force) {
+    moveKey(collection, record.id, index, keys);
   }
 
-  if (start < index) {
-    for (let i = start; i < index; i++) {
-      data.keys[i] = data.keys[i + 1];
-    }
-  } else if (start > index) {
-    for (let i = start; i > index; i--) {
-      data.keys[i] = data.keys[i - 1];
+  collection[id] = record;
+
+  return collection;
+}
+
+/** @internal */
+export function moveKey<T extends IGenericRecord>(
+  collection: Collection<T>,
+  id: T['id'],
+  index: number,
+  keys = cache.get(collection).keys
+): Collection<T> {
+  if (collection[id]) {
+    const start = (keys as IdOf<T>[]).indexOf(id as IdOf<T>);
+
+    if (index >= keys.length) {
+      keys.splice(start, 1);
+      keys.push(id as IdOf<T>);
+    } else if (index <= 0) {
+      keys.splice(start, 1);
+      keys.unshift(id as IdOf<T>);
+    } else if (start < index) {
+      for (let i = start; i < index - 1; i++) {
+        keys[i] = keys[i + 1];
+      }
+      (keys as IdOf<T>[])[index - 1] = id as IdOf<T>;
+    } else if (start > index) {
+      for (let i = start; i > index; i--) {
+        keys[i] = keys[i - 1];
+      }
+      (keys as IdOf<T>[])[index] = id as IdOf<T>;
     }
   }
 
-  collection[record.id] = record;
-  (data.keys as IdOf<T>[])[index] = record.id as IdOf<T>;
   return collection;
 }
 

@@ -1,7 +1,5 @@
-import { Collection, IGenericRecord } from './types';
+import { Collection, IGenericRecord, IterateCallback } from './types';
 import cache from './cache';
-
-export type UpdateCallback<T> = (record: T, i: number, ids: string[]) => Partial<T> | undefined;
 
 /**
  * Map over and update records in collection.
@@ -19,7 +17,7 @@ export type UpdateCallback<T> = (record: T, i: number, ids: string[]) => Partial
  */
 export default function update<T extends IGenericRecord>(
   collection: Collection<T>,
-  callback: UpdateCallback<T>
+  callback: IterateCallback<T, Partial<T> | undefined>
 ): typeof collection {
   const keys = cache.get(collection).keys;
   const l = keys.length;

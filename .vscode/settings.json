@@ -1,3 +1,7 @@
 {
-  "prettier.configPath": ".prettierrc"
+  "prettier.configPath": ".prettierrc",
+  "jestrunner.configPath": "jest.config.js",
+  "jestrunner.jestPath": "/Users/zimmed/Projects/collection/node_modules/.bin/ts-jest",
+  "jestrunner.projectPath": "/Users/zimmed/Projects/collection",
+  "jestrunner.jestCommand": "npm run test --"
 }

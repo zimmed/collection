@@ -1,4 +1,4 @@
-import { Collection, IGenericRecord, KeyOf } from './types';
+import { Collection, IGenericRecord, IdOf } from './types';
 import cache from './cache';
 
 /**
@@ -36,7 +36,7 @@ export default function append<T extends IGenericRecord>(collection: Collection<
  */
 function appendOne<T extends IGenericRecord>(collection: Collection<T>, record: T): Collection<T> {
   if (!collection[record.id]) {
-    cache.get(collection).keys.push(record.id as KeyOf<typeof collection>);
+    cache.get(collection).keys.push(record.id as IdOf<T>);
   }
   collection[record.id] = record;
   return collection;

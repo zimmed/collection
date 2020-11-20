@@ -44,15 +44,17 @@ describe('append()', () => {
     expect(col.bar.data).toBe(-5);
   });
 
-  it('should have a `one` method optimized for adding a single record', () => {
-    expect(cache.get(col).keys.length).toBe(2);
-    expect(append.one(col, a)).toBe(col);
-    expect(cache.get(col).keys.length).toBe(3);
-    expect(cache.get(col).keys[2]).toBe(a.id);
-    expect(col.baz.data).toBe(-1);
-    expect(col.bar.data).toBe(10);
-    expect(append.one(col, b)).toBe(col);
-    expect(cache.get(col).keys[1]).toBe(b.id);
-    expect(col.bar.data).toBe(-5);
+  describe('append.one()', () => {
+    it('it should add a single record', () => {
+      expect(cache.get(col).keys.length).toBe(2);
+      expect(append.one(col, a)).toBe(col);
+      expect(cache.get(col).keys.length).toBe(3);
+      expect(cache.get(col).keys[2]).toBe(a.id);
+      expect(col.baz.data).toBe(-1);
+      expect(col.bar.data).toBe(10);
+      expect(append.one(col, b)).toBe(col);
+      expect(cache.get(col).keys[1]).toBe(b.id);
+      expect(col.bar.data).toBe(-5);
+    });
   });
 });
